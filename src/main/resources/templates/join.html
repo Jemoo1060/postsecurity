@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link href="/css/common.css" rel="stylesheet" type="text/css"/>
+    <title>Title</title>
+    <style>
+        .join-box{
+            border: 1px solid darkgray;
+            border-radius: 7px;
+            box-shadow: 1px 1px 6px 0.3px darkgray;
+        }
+
+        .join-box {
+            min-width: 600px;
+            width: 50%;
+            min-height: 560px;
+
+            padding-top: 20px;
+        }
+
+        .join-box * {
+            font-size: 25px;
+        }
+
+        .join-input {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 15px;
+        }
+
+        #join-check{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        .join-help {
+            width: 35%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .join-text {
+            width: 60%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin-right: 5%;
+
+        }
+        .join-text > button{
+            margin-left: 3%;
+            font-size: 20px;
+            padding: 7px;
+        }
+
+        .help{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 15px;
+            color: red;
+
+        }
+        .is-safe{
+            display: none;
+        }
+        .is-success{
+            color: green;
+        }
+
+        .join-btn-box{
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .join-btn-box  > button {
+            width: 40%;
+            margin-right: 10px;
+        }
+
+    </style>
+    <script>
+        $(document).ready(function () {
+            $('#id-input-help').hide();
+            $('#password-input-help').hide();
+        });
+
+
+        // 회원가입
+        function join() {
+            let username = $('#join-username').val();
+            let usernickname= $('#join-usernickname').val();
+            let password = $('#join-pw').val();
+            let password2 = $('#join-chk-pw').val();
+            let email = $('#join-email').val();
+
+
+            if ($("#help-id").hasClass("is-danger")) {
+                alert("아이디를 다시 확인해주세요.")
+                return;
+            } else if (!$("#help-id").hasClass("is-success")) {
+                alert("아이디 중복확인을 해주세요.")
+                return;
+            }
+            if (usernickname == "") {
+                $("#help-nickname").text("닉네임을 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                $("#join-usernickname").focus()
+                return;
+            }
+
+            if (password == "") {
+                $("#help-pw").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                $("#join-pw").focus()
+                return;
+            } else if (!is_password(password)) {
+                $("#help-pw").text("비밀번호의 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용가능 8-20자").removeClass("is-safe").addClass("is-danger")
+                $("#join-pw").focus()
+                return
+            } else {
+                $("#help-chk-pw").text("사용할 수 있는 비밀번호입니다.").removeClass("is-danger").addClass("is-success")
+            }
+
+            if (password2 == "") {
+                $("#help-chk-pw").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                $("#join-chk-pw").focus()
+                return;
+            } else if (password2 != password) {
+                $("#help-chk-pw").text("비밀번호가 일치하지 않습니다.").removeClass("is-safe").addClass("is-danger")
+                $("#join-chk-pw").focus()
+                return;
+            } else {
+                $("#help-chk-pw").text("비밀번호가 일치합니다.").removeClass("is-danger").addClass("is-success")
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/user/join",
+                data: {
+                    'username': username,
+                    'usernickname' : usernickname,
+                    'password': password,
+                    'email' : email
+                },
+                success: function (response) {
+                    alert("회원가입을 축하드립니다!")
+                    window.location.replace("/user/login")
+                }
+            });
+
+        }
+
+        // 아이디 중복 체크
+        function check_dup() {
+            let username = $("#join-username").val();
+
+            if (username == "") {
+                $("#help-id").text("아이디를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                $("#join-username").focus()
+                return;
+            }
+            if (!is_nickname(username)) {
+                $("#help-id").text("아이디의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
+                $("#join-username").focus()
+                return;
+            }
+            $("#help-id").addClass("is-loading")
+            $.ajax({
+                type: "POST",
+                url: "/user/check_dup",
+                data: {
+                    'username': username
+                },
+                success: function (response) {
+                    if (!response) {
+                        $("#help-id").text("이미 존재하는 아이디입니다.").removeClass("is-safe").addClass("is-danger")
+                        $("#join-username").focus()
+                    } else {
+                        $("#help-id").text("사용할 수 있는 아이디입니다.").removeClass("is-safe").removeClass("is-danger").addClass("is-success")
+                    }
+                }
+            });
+        }
+
+        // 아이디 생성조건 제약
+        function is_nickname(asValue) {
+            var regExp = /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{3,10}$/;
+            return regExp.test(asValue);
+        }
+
+        // 비밀번호 생성조건 제약
+        function is_password(asValue) {
+            var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$/;
+            return regExp.test(asValue);
+        }
+
+
+    </script>
+</head>
+<body>
+<div class="header">
+    <h1 onclick = "location.href='/'">연습해보자</h1>
+</div>
+<div class="content-box">
+    <h1>JOIN</h1>
+
+    <div class="join-box" >
+        <div id = "join-check">* 표시가 되있는건 필수 입력 사항입니다.</div>
+        <div class="join-input">
+            <div class="join-help">
+                <p>*아이디&nbsp&nbsp&nbsp&nbsp&nbsp :</p>
+            </div>
+            <div class="join-text">
+                <input class="input is-normal" type="text" placeholder="2-10자 영문 숫자" id="join-username">
+                <button class="button is-warning" onclick="check_dup()">중복 확인</button>
+            </div>
+        </div>
+        <div class="help is-safe" id="help-id"></div>
+        <div class="join-input">
+            <div class="join-help">
+                <p>*닉네임&nbsp&nbsp&nbsp&nbsp&nbsp :</p>
+            </div>
+            <div class="join-text">
+                <input class="input is-normal" type="text" placeholder="닉네임 입력해주세요" id="join-usernickname">
+            </div>
+        </div>
+        <div class="help is-safe" id="help-nickname"></div>
+        <div class="join-input">
+            <div class="join-help">
+                <p>*비밀번호 &nbsp&nbsp&nbsp: </p>
+            </div>
+            <div class="join-text">
+                <input class="input is-normal" type="password" placeholder="영문과 숫자 조합의 8-20자" id="join-pw">
+            </div>
+        </div>
+        <div class="help is-safe" id="help-pw"></div>
+        <div class="join-input">
+            <div class="join-help">
+                <p>*비밀번호 확인: </p>
+            </div>
+            <div class="join-text">
+                <input class="input is-normal" type="password" placeholder="재확인 입력해주세요" id="join-chk-pw">
+            </div>
+        </div>
+        <div class="help is-safe" id="help-chk-pw"></div>
+        <div class="join-input">
+            <div class="join-help">
+                <p>이메일&nbsp&nbsp&nbsp&nbsp&nbsp :</p>
+            </div>
+            <div class="join-text">
+                <input class="input is-normal" type="text" placeholder="이메일을 입력해주세요" id="join-email">
+            </div>
+        </div>
+        <div class = "join-btn-box">
+            <button class="button is-danger is-light" onclick="join()">가입하기</button>
+            <button class="button is-danger is-light" onclick="">돌아가기</button>
+
+        </div>
+    </div>
+
+</div>
+
+<footer></footer>
+</body>
+</html>

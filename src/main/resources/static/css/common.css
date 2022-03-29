@@ -1,0 +1,67 @@
+/*전체 글꼴*/
+* {
+    font-family: 'Gowun Dodum', sans-serif;
+}
+
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.header {
+    width: 100%;
+    height: 300px;
+
+    background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.2)), url("../images/pexels-jv-buenconcejo-2719301.jpg");
+    background-position: center;
+    background-size: cover;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 10px;
+
+}
+
+
+.header > h1 {
+    color: beige;
+    font-weight: lighter;
+    font-size: 60px;
+}
+
+.content-box {
+    width: 70%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.content-box > h1 {
+    font-size: 45px;
+    margin-bottom: 20px;
+}
+
+.header-help{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: right;
+
+    width: 80%;
+}
+.header-help > p {
+    margin-right: 20px;
+}
+
+
+footer{
+    min-height: 100px;
+}

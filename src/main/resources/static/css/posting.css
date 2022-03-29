@@ -1,0 +1,28 @@
+
+#input-box {
+    width: 60%;
+}
+#input-box *{
+    font-size: 22px;
+}
+
+#input-box > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 20px;
+}
+.form-control{
+    width: 30%;
+}
+
+
+#post-btn{
+    margin-right: 30px;
+}
+.textarea{
+    height: 300px;
+    margin-bottom: 30px;
+}

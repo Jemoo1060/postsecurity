@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link href="/css/common.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/detailPost.css" rel="stylesheet" type="text/css"/>
+    <title>Title</title>
+</head>
+<style>
+    #comment-box {
+        width: 60%;
+        min-width: 400px;
+
+        border-top: 1px solid darkgrey;
+
+        margin-top: 40px;
+    }
+
+    .comment-view {
+        border-bottom: 1px solid darkgrey;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .comment-header {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .commnet-info {
+        display: flex;
+        flex-direction: row;
+        flex: 85%;
+        margin-bottom: 5px;
+    }
+
+    .comment-setting {
+        display: flex;
+        flex-direction: row;
+        flex: 15%;
+
+    }
+
+
+    .comment-setting > form > button, .comment-setting > button {
+        font-size: 10px;
+        padding: 3px;
+    }
+
+    #comment-btn {
+        margin-right: 8px;
+    }
+
+    .comment-input-box {
+        width: 100%;
+        min-height: 130px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        background-color: lightgrey;
+
+        margin-top: 20px;
+    }
+
+    .comment-input-box > .field {
+        flex: 90%;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        padding-top: 7px;
+    }
+
+    .controller {
+        width: 95%;
+    }
+
+    .input-btn {
+        flex: 10%;
+        padding-right: 10px;
+
+    }
+
+
+    .input-btn > button {
+        padding: 5px;
+        margin-right: 5px;
+        height: 98px;
+    }
+
+    .comment-update-form{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+
+    }
+
+    .update-textarea{
+        flex: 90%;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+    }
+
+    .update-textarea > textarea{
+        width: 95%;
+    }
+
+    .update-btn{
+        flex: 10%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .update-btn > button{
+        padding: 10px;
+        height: 53px;
+
+        margin-right: 10px;
+    }
+    .view-hide{
+        display: none;
+    }
+    #writer{
+        font-size: 15px;
+    }
+    .comment-info-text{
+        font-size: 12px;
+    }
+
+</style>
+<script>
+    // 댓글 등록
+    function comment_upload() {
+
+        let comment = $('#comment-text').val();
+
+        if (comment == '') {
+            alert('댓글을 작성해주세요')
+            return
+        }
+
+        $('#comment-form').submit();
+    }
+
+
+    // 댓글 삭제
+    function comment_delete() {
+        if (confirm("정말 삭제하시겠습니까?") === true) {
+            $('#comment-delete').submit();
+        }
+    }
+
+    function updateView(id) {
+        $('#comment-view-' + id + '').hide();
+        $('#comment-update-' + id + '').removeClass("view-hide");
+    }
+
+    // 댓글 등록
+    function comment_update(id) {
+
+        let comment = $('#comment-update-text-' + id).val();
+
+        if (comment == '') {
+            alert('댓글을 작성해주세요')
+            return
+        }
+
+        $('#comment-update-form-'+id ).submit();
+    }
+
+
+
+</script>
+<body>
+<div class="header">
+    <h1 onclick="location.href='/'">연습해보자</h1>
+</div>
+<div class="header-help" th:if="${usernickname}">
+    <span th:text="${usernickname}"></span>
+    <p>님 환영합니다</p>
+    <form id="logout-form" method="post" action="/user/logout">
+        <button class="button is-danger is-light">로그아웃</button>
+    </form>
+</div>
+<div class="content-box">
+    <h1>Notice</h1>
+    <div id="detail-info">
+        <h1>제목 : <span th:text="${post.title}"></span></h1>
+        <p id="writer">작성자 : <span th:text="${post.usernickname}"></span>(<span
+                th:text="${post.username.substring(0,3)}"></span>) &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            작성시간 : <span th:text="${post.createdAt.toString().split('T')[0]}"></span>&nbsp&nbsp<span
+                    th:text="${post.createdAt.toString().split('T')[1].substring(0, 8)}"></span></p>
+        <p id="content">내용 : <span th:text="${post.content}"></span></p>
+    </div>
+    <div id="detail-btn">
+        <form method="post" action="/updateView" th:if="${username.equals(post.username)}">
+            <input type="hidden" th:value="${post.id}" name="id">
+            <button class="button is-danger is-light">수정</button>
+        </form>
+        <form method="post" action="/post/deleteOne" th:if="${username.equals(post.username)}">
+            <input type="hidden" th:value="${post.id}" name="id">
+            <button class="button is-danger is-light">삭제</button>
+        </form>
+        <button class="button is-danger is-light" onclick="location.href = '/'">돌아가기</button>
+    </div>
+    <div id="comment-box">
+        <div class="comment-view" th:each="comment:${list}" >
+            <div class="comment-info" th:id="'comment-view-' + ${comment.id}">
+                <div class="comment-header">
+                    <div class="commnet-info">
+                        <p class="comment-info-text">작성자 : <span th:text="${comment.usernickname}"></span>(<span
+                                th:text="${comment.username.substring(0,3)}"></span>)
+                            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            작성시간 : <span th:text="${comment.createdAt.toString().split('T')[0]}"></span>&nbsp&nbsp<span
+                                    th:text="${comment.createdAt.toString().split('T')[1].substring(0, 8)}"></span></p>
+                    </div>
+                    <div class="comment-setting">
+                        <form id="comment-delete" action="/comment/delete" method="post">
+                            <button id="comment-btn" type="button" class="btn btn-outline-dark"
+                                    th:if="${comment.username.equals(username)}" th:attr="onclick=|updateView('${comment.id}')|">수정
+                            </button>
+                            <input type="hidden" name="id" th:value="${comment.id}">
+                            <button type="button" class="btn btn-outline-dark"
+                                    th:if="${comment.username.equals(username)}" onclick="comment_delete()">삭제
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <p>댓글 내용 : <span th:text="${comment.content}"></span></p>
+            </div>
+            <div class="comment-update view-hide" th:id="'comment-update-'+${comment.id}">
+                <form  class="comment-update-form" th:id="'comment-update-form-'+${comment.id}" method="post" action="/comment/update">
+                    <input type="hidden" name = "id" th:value="${comment.id}">
+                    <input type="hidden" name = "postId" th:value="${post.id}">
+                    <input type="hidden" name = "usernickname" th:value="${comment.usernickname}">
+                    <input type="hidden" name = "username" th:value="${comment.username}">
+                    <div class="update-textarea" >
+                        <textarea name ="content"  th:text="${comment.content}" th:id="'comment-update-text-'+${comment.id}"></textarea>
+                    </div>
+                    <div class="update-btn">
+                        <button class="button is-normal" th:attr="onclick=|comment_update('${comment.id}')|">수정</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <form id="comment-form" method="post" action="/api/comment">
+            <input type="hidden" name="postId" th:value="${post.id}">
+            <div class="comment-input-box">
+                <div class="field">
+                    <div class="controller">
+                        <textarea class="textarea is-small" id="comment-text" placeholder="댓글을 작성해주세요"
+                                  name="content"></textarea>
+                    </div>
+                </div>
+                <div class="input-btn">
+                    <button class="button is-large" type="button" onclick="comment_upload()">등록</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<footer></footer>
+</body>
+</html>

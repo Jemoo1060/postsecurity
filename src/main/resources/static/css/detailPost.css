@@ -1,0 +1,36 @@
+
+
+#detail-info {
+    min-width: 400px;
+    width: 60%;
+    margin-bottom: 30px;
+}
+
+#detail-info > h1 {
+    color: darkred;
+    font-size: 60px;
+
+}
+
+
+#writer {
+    font-size: 23px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid darkgray;
+}
+
+#content {
+    font-size: 23px;
+    min-height: 200px;
+}
+
+#detail-btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#detail-btn > form{
+    margin-right: 20px;
+}
