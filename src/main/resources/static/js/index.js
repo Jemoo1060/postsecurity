@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    postShow();
+   postShow();
 })
 // 전체 글 목록 조회
 function postShow() {
     $.ajax({
         type: 'GET',
-        url: '/api/posts',
+        url: '/api/postsInfo',
         success: function (response) {
             $('#post-table').empty();
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -150,9 +150,17 @@
     }
 
 </style>
-<script>
+<script th:inline="javascript">
+
     // 댓글 등록
     function comment_upload() {
+
+        let username = [[${username}]];
+
+        if(username == null){
+            alert('로그인 후 가능한 기능입니다');
+            return
+        }
 
         let comment = $('#comment-text').val();
 
@@ -177,7 +185,7 @@
         $('#comment-update-' + id + '').removeClass("view-hide");
     }
 
-    // 댓글 등록
+    // 댓글 수정
     function comment_update(id) {
 
         let comment = $('#comment-update-text-' + id).val();
@@ -189,9 +197,6 @@
 
         $('#comment-update-form-'+id ).submit();
     }
-
-
-
 </script>
 <body>
 <div class="header">
@@ -204,6 +209,9 @@
         <button class="button is-danger is-light">로그아웃</button>
     </form>
 </div>
+<div class="header-help" th:unless="${usernickname}">
+    <button class="button is-danger is-light" onclick="location.href='/user/login'">로그인</button>
+</div>
 <div class="content-box">
     <h1>Notice</h1>
     <div id="detail-info">
@@ -215,11 +223,11 @@
         <p id="content">내용 : <span th:text="${post.content}"></span></p>
     </div>
     <div id="detail-btn">
-        <form method="post" action="/updateView" th:if="${username.equals(post.username)}">
+        <form method="post" action="/updateView" th:if="${post.username.equals(username)}">
             <input type="hidden" th:value="${post.id}" name="id">
             <button class="button is-danger is-light">수정</button>
         </form>
-        <form method="post" action="/post/deleteOne" th:if="${username.equals(post.username)}">
+        <form method="post" action="/post/deleteOne" th:if="${post.username.equals(username)}">
             <input type="hidden" th:value="${post.id}" name="id">
             <button class="button is-danger is-light">삭제</button>
         </form>

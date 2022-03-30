@@ -39,8 +39,12 @@ public class PostController {
 
         Post post = postService.getPost(id);
         List<Comment> list= commentService.getComments(id);
-        model.addAttribute("username", userDetails.getUsername());
-        model.addAttribute("usernickname", userDetails.getUserNickname());
+
+        if(userDetails !=  null){
+            model.addAttribute("username", userDetails.getUsername());
+            model.addAttribute("usernickname", userDetails.getUserNickname());
+        }
+
         model.addAttribute("post", post);
         model.addAttribute("list", list);
 

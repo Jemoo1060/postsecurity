@@ -24,7 +24,7 @@ public class PostRestController {
     private final PostService postService;
 
     // 메인페이지 게시판 나열
-    @GetMapping("/api/posts")
+    @GetMapping("/api/postsInfo")
     public List<Post> getPosts() {
         return postService.getPosts();
     }

@@ -2,10 +2,13 @@ package com.sparta.post.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.post.dto.UserRequestDto;
+import com.sparta.post.security.UserDetailsImpl;
 import com.sparta.post.service.KakaoUserService;
 import com.sparta.post.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -22,13 +25,23 @@ public class UserController {
 
     // 회원 로그인 페이지
     @GetMapping("/user/login")
-    public String login() {
+    public String login(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        if(userDetails != null){
+            model.addAttribute("usernickname", userDetails.getUserNickname());
+        }
+
         return "login";
     }
 
     // 회원 가입 페이지
     @GetMapping("/user/join")
-    public String signup() {
+    public String signup(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        if(userDetails != null){
+            model.addAttribute("usernickname", userDetails.getUserNickname());
+        }
+
         return "join";
     }
 
