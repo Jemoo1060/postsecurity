@@ -29,8 +29,8 @@ public class UserDetailsImpl implements UserDetails {
         return user.getUsername();
     }
 
-    public String getUserNickname(){
-        return user.getUserNickname();
+    public String getUsernickname(){
+        return user.getUsernickname();
     }
 
     public Long getUserId(){

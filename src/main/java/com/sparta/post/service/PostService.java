@@ -2,6 +2,7 @@ package com.sparta.post.service;
 
 import com.sparta.post.models.Comment;
 import com.sparta.post.models.Post;
+import com.sparta.post.repository.CommentRepository;
 import com.sparta.post.repository.PostRepository;
 import com.sparta.post.dto.PostRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional // 메소드 동작이 SQL 쿼리문임을 선언합니다.
     public void update(Long id, PostRequestDto postrequestDto) {
@@ -30,6 +32,7 @@ public class PostService {
         return postRepository.findAllByOrderByCreatedAtDesc();
     }
 
+
     public void createPost(Post post) {
         postRepository.save(post);
     }
@@ -38,6 +41,7 @@ public class PostService {
         return postRepository.findById(id).get();
     }
 
+    @Transactional
     public void deleteOne(Long id, String username) {
 
         Post post = postRepository.findById(id).orElseThrow(
@@ -45,6 +49,7 @@ public class PostService {
         );
         if(username.equals(post.getUsername())){
             postRepository.deleteById(id);
+            commentRepository.deleteAllByPostId(id);
         }
     }
 

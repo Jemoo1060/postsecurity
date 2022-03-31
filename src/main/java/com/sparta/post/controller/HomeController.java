@@ -12,7 +12,7 @@ public class HomeController {
     public String home(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         if(userDetails != null){
-            model.addAttribute("usernickname", userDetails.getUserNickname());
+            model.addAttribute("usernickname", userDetails.getUsernickname());
         }
 
 

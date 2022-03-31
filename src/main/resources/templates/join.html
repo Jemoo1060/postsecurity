@@ -85,9 +85,6 @@
             color: red;
 
         }
-        .is-safe{
-            display: none;
-        }
         .is-success{
             color: green;
         }
@@ -149,7 +146,7 @@
                 $("#join-pw").focus()
                 return;
             } else if (!is_password(password)) {
-                $("#help-pw").text("비밀번호의 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용가능 4-20자").removeClass("is-safe").addClass("is-danger")
+                $("#help-pw").text("영문, 숫자, 특수문자 포함 4자이상의 비밀번호여야 합니다.").removeClass("is-safe").addClass("is-danger")
                 $("#join-pw").focus()
                 return
             } else {
@@ -185,6 +182,50 @@
 
         }
 
+        // 회원가입
+        function test() {
+            let username = $('#join-username').val();
+            let usernickname= $('#join-usernickname').val();
+            let password = $('#join-pw').val();
+            let email = $('#join-email').val();
+
+
+            $.ajax({
+                type: "POST",
+                url: "/user/sendSignUpEmail",
+                data: {
+                    'username': username,
+                    'usernickname' : usernickname,
+                    'password': password,
+                    'email' : email
+                },
+                success: function (response) {
+                    let check = response["check"];
+
+                    if(check == 'false'){
+                        let valid_username = response["valid_username"];
+                        let valid_password = response["valid_password"];
+                        let valid_idContainPw = response["valid_idContainPw"];
+                        if(valid_username !== undefined){
+                            $("#help-id").text(valid_username);
+                        }
+                        if(valid_password !== undefined){
+                            $("#help-pw").text(valid_password);
+
+                        }
+                        if(valid_idContainPw !== undefined){
+                            $("#help-pw").text(valid_idContainPw);
+
+                            return;
+                        }
+                     }
+
+                    join();
+                }
+            });
+
+        }
+
         // 아이디 중복 체크
         function check_dup() {
             let username = $("#join-username").val();
@@ -195,7 +236,7 @@
                 return;
             }
             if (!is_nickname(username)) {
-                $("#help-id").text("아이디의 형식을 확인해주세요. 영문과 숫자 사용 가능. 3-10자 길이").removeClass("is-safe").addClass("is-danger")
+                $("#help-id").text("아이디의 형식을 확인해주세요. 영문과 숫자 사용 가능. 3자 이상 길이").removeClass("is-safe").addClass("is-danger")
                 $("#join-username").focus()
                 return;
             }
@@ -219,13 +260,13 @@
 
         // 아이디 생성조건 제약
         function is_nickname(asValue) {
-            var regExp =/^[A-Za-z0-9]{3,10}$/;
+            var regExp =/^[A-Za-z0-9]{3,50}$/;
             return regExp.test(asValue);
         }
 
         // 비밀번호 생성조건 제약
         function is_password(asValue) {
-            var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{4,20}$/;
+            var regExp = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{4,100}$/;
             return regExp.test(asValue);
         }
 
@@ -246,11 +287,11 @@
                 <p>*아이디&nbsp&nbsp&nbsp&nbsp&nbsp :</p>
             </div>
             <div class="join-text">
-                <input class="input is-normal" type="text" placeholder="3-10자 영문 숫자" id="join-username">
+                <input class="input is-normal" type="text" placeholder="3자이상 영문 숫자" id="join-username">
                 <button class="button is-warning" onclick="check_dup()">중복 확인</button>
             </div>
         </div>
-        <div class="help is-safe" id="help-id"></div>
+        <div class="help is-safe" id="help-id" ></div>
         <div class="join-input">
             <div class="join-help">
                 <p>*닉네임&nbsp&nbsp&nbsp&nbsp&nbsp :</p>
@@ -259,13 +300,13 @@
                 <input class="input is-normal" type="text" placeholder="닉네임 입력해주세요" id="join-usernickname">
             </div>
         </div>
-        <div class="help is-safe" id="help-nickname"></div>
+        <div class="help is-safe" id="help-nickname" ></div>
         <div class="join-input">
             <div class="join-help">
                 <p>*비밀번호 &nbsp&nbsp&nbsp: </p>
             </div>
             <div class="join-text">
-                <input class="input is-normal" type="password" placeholder="4-20자" id="join-pw">
+                <input class="input is-normal" type="password" placeholder="영문,숫자,특수 포함 4자이상" id="join-pw">
             </div>
         </div>
         <div class="help is-safe" id="help-pw"></div>
@@ -287,8 +328,8 @@
             </div>
         </div>
         <div class = "join-btn-box">
-            <button class="button is-danger is-light" onclick="join()">가입하기</button>
-            <button class="button is-danger is-light" onclick="">돌아가기</button>
+            <button class="button is-danger is-light" onclick="test()">가입하기</button>
+            <button class="button is-danger is-light" onclick="location.href = '/user/login'">돌아가기</button>
 
         </div>
     </div>

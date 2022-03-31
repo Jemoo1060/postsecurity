@@ -2,6 +2,7 @@ package com.sparta.post.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.post.dto.UserRequestDto;
+import com.sparta.post.models.User;
 import com.sparta.post.security.UserDetailsImpl;
 import com.sparta.post.service.KakaoUserService;
 import com.sparta.post.service.UserService;
@@ -9,7 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -28,7 +34,7 @@ public class UserController {
     public String login(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         if(userDetails != null){
-            model.addAttribute("usernickname", userDetails.getUserNickname());
+            model.addAttribute("usernickname", userDetails.getUsernickname());
         }
 
         return "login";
@@ -39,7 +45,7 @@ public class UserController {
     public String signup(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         if(userDetails != null){
-            model.addAttribute("usernickname", userDetails.getUserNickname());
+            model.addAttribute("usernickname", userDetails.getUsernickname());
         }
 
         return "join";
@@ -52,6 +58,32 @@ public class UserController {
 
         return userService.usernameCheckdup(username);
     }
+
+    // 서버에서 정규식 표현 유효성 사용하기
+    @PostMapping("/user/sendSignUpEmail")
+    @ResponseBody
+    public Map<String, String> sendSignUpEmail(@ModelAttribute @Valid User user, BindingResult errors) {
+
+        Map<String, String> validatorResult = new HashMap<>();
+        validatorResult.put("check","true");
+
+        if (errors.hasErrors()) {
+            validatorResult = userService.validateHandling(errors,  validatorResult);
+
+            validatorResult.put("check","false");
+            return validatorResult;
+        }
+
+
+        if(user.getPassword().contains(String.valueOf(user.getUsername()))){
+            validatorResult.put("valid_idContainPw", "비밀번호에 아이디가 포함되어있습니다.");
+            validatorResult.put("check","false");
+            return validatorResult;
+        }
+
+        return validatorResult;
+    }
+
 
     // 회원 가입 요청 처리
     @PostMapping("/user/join")
@@ -71,4 +103,5 @@ public class UserController {
         return "redirect:/";
     }
 }
+
 

@@ -22,7 +22,7 @@ public class CommentController {
     public String createComment(@ModelAttribute CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         commentRequestDto.setUsername(userDetails.getUsername());
-        commentRequestDto.setUsernickname(userDetails.getUserNickname());
+        commentRequestDto.setUsernickname(userDetails.getUsernickname());
         Comment comment = new Comment(commentRequestDto);
 
 

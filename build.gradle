@@ -31,6 +31,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     // Thymeleaf (뷰 템플릿 엔진)
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // valid 사용
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 //    // JWT
 //    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'

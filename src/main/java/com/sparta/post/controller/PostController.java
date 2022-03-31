@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,7 +25,7 @@ public class PostController {
     @GetMapping("/postView")
     public String postView(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        model.addAttribute("usernickname", userDetails.getUserNickname());
+        model.addAttribute("usernickname", userDetails.getUsernickname());
 
         return "posting";
     }
@@ -42,7 +39,7 @@ public class PostController {
 
         if(userDetails !=  null){
             model.addAttribute("username", userDetails.getUsername());
-            model.addAttribute("usernickname", userDetails.getUserNickname());
+            model.addAttribute("usernickname", userDetails.getUsernickname());
         }
 
         model.addAttribute("post", post);
@@ -51,13 +48,42 @@ public class PostController {
 
         return "detailPost";
     }
+    // 메인페이지 게시판 나열
+    @GetMapping("/api/postsInfo")
+    @ResponseBody
+    public List<Post> getPosts() {
+        return postService.getPosts();
+    }
+
+    // 게시판 등록
+    @PostMapping("/api/posts")
+    @ResponseBody
+    public Post createPost(@RequestBody PostRequestDto postrequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postrequestDto.setUsername(userDetails.getUsername());
+        postrequestDto.setUserNickname(userDetails.getUsernickname());
+        Post post = new Post(postrequestDto);
+        postService.createPost(post);
+        return post;
+    }
+
+    // 상세글 정보 나열
+    @GetMapping("/api/detailposts/{id}")
+    @ResponseBody
+    public Post getPost(@PathVariable Long id) {
+
+        postService.getPost(id);
+
+        return postService.getPost(id);
+    }
+
+
 
     @PostMapping("/updateView")
     public String updateView(@RequestParam Long id,Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         Post post = postService.getPost(id);
         model.addAttribute("post", post);
-        model.addAttribute("usernickname", userDetails.getUserNickname());
+        model.addAttribute("usernickname", userDetails.getUsernickname());
 
         return "postUpdate";
     }
